@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
 
 // Conexión a la base de datos
+const connectDB = async () => {
 mongoose
-  .connect("mongodb://localhost:27017/shipgocanaryApi", {
+  .connect("mongodb://localhost/shipgocanaryApi", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -12,5 +13,7 @@ mongoose
   .catch((error) => {
     console.error("Error al conectar a MongoDB:", error);
   });
+}
 
-  module.exports = mongoose
+
+  module.exports = { mongoose, connectDB };

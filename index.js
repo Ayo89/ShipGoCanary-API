@@ -1,6 +1,21 @@
 require('dotenv').config()
+const cors = require('cors')
 const express = require('express')
-const mongoose = require('./db')
+const {mongoose, connectDB} = require('./db')
+const router = require('./api/routes')
+const api = express()
 
+const start = async () => {
+  try {
+    api
+      .use(cors())
+      .use(express.json())
+      .use('/api', router)
+      .listen(process.env.PORT || 5000)
+      await connectDB()
+  } catch (err) {
+    
+  }
+}
 
-  // use `await mongoose.connect('mongodb://user:password@127.0.0.1:27017/test');` if your database has auth enabled
+start()
