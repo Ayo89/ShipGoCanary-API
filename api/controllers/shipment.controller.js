@@ -1,4 +1,5 @@
 const Shipment = require("../models/shipment.model");
+const User = require("../models/user.model");
 
 async function createShipment(req, res) {
   try {
@@ -29,7 +30,8 @@ async function getOneShipment(req, res) {
 
 async function deleteShipment(req, res) {
   try {
-    const shipment = await Shipment.deleteOne({ _id: req.params.id });
+    const userLogged = res.locals.user;
+
     if (shipment) {
       return res.status(200).send("Shipment removed successfully");
     } else {
@@ -48,7 +50,7 @@ async function updateShipment(req, res) {
     );
 
     if (nModified !== 0) {
-      const shipment = await Shipment.findById(req.params.id);
+      const userLogged = await User.findById(req.params.id);
       return res
         .status(200)
         .json({ message: "Shipment updated successfully", shipment: shipment });
@@ -83,12 +85,52 @@ async function selfUpdate(req, res) {
   }
 }
 
-async function getShipmentLogged(req, res) {
+//funcional
+
+async function userDeleteShipment(req, res) {
   try {
-    const shipmentLogged = res.locals.shipment;
-    res.status(200).json(shipmentLogged);
+    const userLogged = res.locals.user;
+    const shipment = await Shipment.findById({ _id: req.params.id })
+      .populate("user_id")
+      .populate("carried_id")
+      .populate("category_id");
+    if (userLogged.id === shipment.user_id._id.toString()) {
+      if (shipment) {
+        return res.status(200).send("Shipment removed successfully");
+      } else {
+        return res.status(404).send("Shipment not found");
+      }
+    }
   } catch (err) {
     res.status(500).send(err.message);
+  }
+}
+
+async function UserUpdateShipment(req, res) {
+  try {
+    const userLogged = res.locals.user;
+    const shipment = await Shipment.findById({ _id: req.params.id })
+      .populate("user_id")
+      .populate("carried_id")
+      .populate("category_id");
+    console.log(userLogged.id, shipment.user_id._id.toString());
+    if (userLogged.id === shipment.user_id._id.toString()) {
+      const { nModified } = await Shipment.updateOne(
+        { _id: req.params.id },
+        req.body
+      );
+      const result = await Shipment.findById({ _id: req.params.id });
+      if (nModified !== 0) {
+        return res.status(200).json({
+          message: "Shipment updated successfully",
+          shipment: result,
+        });
+      } else {
+        return res.status(404).send("Shipment not found");
+      }
+    } else return res.status(404).send("Shipment not found");
+  } catch (error) {
+    res.status(500).send(error.message);
   }
 }
 
@@ -96,9 +138,24 @@ async function userAddShipment(req, res) {
   try {
     req.body.user_id = res.locals.user;
     const shipment = await Shipment.create(req.body);
-    res.status(200).json({ message: "Shipment updated successfully", shipment: shipment });
+    res
+      .status(200)
+      .json({ message: "Shipment updated successfully", shipment: shipment });
   } catch (err) {
     res.status(500).send(err.message);
+  }
+}
+
+async function getAllShipmentsByUserLogged(req, res) {
+  try {
+    const userLogged = res.locals.user;
+    const shipment = await Shipment.find({ user_id: userLogged._id })
+      .populate("user_id")
+      .populate("carried_id")
+      .populate("category_id");
+    res.status(200).json(shipment);
+  } catch (error) {
+    res.status(500).send(error.message);
   }
 }
 
@@ -110,6 +167,8 @@ module.exports = {
   deleteShipment,
   selfDelete,
   selfUpdate,
-  getShipmentLogged,
   userAddShipment,
+  getAllShipmentsByUserLogged,
+  UserUpdateShipment,
+  userDeleteShipment,
 };

@@ -1,23 +1,17 @@
 const router = require("express").Router();
 const { checkAdmin } = require("../middlewares/auth");
 const {
-  createShipment,
-  getAllShipments,
-  updateShipment,
+  getAllShipmentsByUserLogged,
+  UserUpdateShipment,
   getOneShipment,
-  deleteShipment,
-  selfDelete,
-  selfUpdate,
-  getShipmentLogged,
   userAddShipment,
+  userDeleteShipment
 } = require("../controllers/shipment.controller");
 
-router.get("/", getAllShipments);
-router.get("/profile", getShipmentLogged);
+router.get("/", getAllShipmentsByUserLogged);
 router.get("/:id", getOneShipment);
 router.post("/", userAddShipment);
-router.put("/:id", updateShipment);
-router.put("/profile/:id", selfUpdate);
-router.delete("/:id", deleteShipment);
-router.delete("/profile", selfDelete);
+router.put("/:id", UserUpdateShipment);
+router.delete("/:id", userDeleteShipment);
+
 module.exports = router;
