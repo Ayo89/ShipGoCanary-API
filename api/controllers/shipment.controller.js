@@ -94,7 +94,9 @@ async function userDeleteShipment(req, res) {
       .populate("user_id")
       .populate("carried_id")
       .populate("category_id");
+      console.log(shipment.user_id._id.toString());
     if (userLogged.id === shipment.user_id._id.toString()) {
+     await Shipment.deleteOne({ _id: req.params.id });
       if (shipment) {
         return res.status(200).send("Shipment removed successfully");
       } else {
@@ -113,7 +115,7 @@ async function UserUpdateShipment(req, res) {
       .populate("user_id")
       .populate("carried_id")
       .populate("category_id");
-    console.log(userLogged.id, shipment.user_id._id.toString());
+   
     if (userLogged.id === shipment.user_id._id.toString()) {
       const { nModified } = await Shipment.updateOne(
         { _id: req.params.id },
