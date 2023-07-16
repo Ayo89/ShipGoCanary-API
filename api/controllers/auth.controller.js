@@ -1,14 +1,11 @@
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken')
 const User = require("../models/user.model");
 
 const signup = async (req, res) => {
   try {
     req.body.password = bcrypt.hashSync(req.body.password, 10);
-    console.log(req.body)
     const user = await User.create(req.body);
-    console.log(user)
-    
     const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
@@ -39,14 +36,8 @@ const login = async (req, res) => {
   }
 };
 
-const saluda = async (req, res) => {
-  console.log("Hola")
-};
-
-
 
 module.exports = {
   signup,
-  login,
-  saluda
+  login
 };
