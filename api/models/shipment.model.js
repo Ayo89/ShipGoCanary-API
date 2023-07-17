@@ -6,7 +6,7 @@ const shipment = new mongoose.Schema({
     required: false,
   },
   quantity: {
-    type: Number,
+    type: String,
     required: false,
   },
   service: {
@@ -35,6 +35,10 @@ const shipment = new mongoose.Schema({
   },
   price: {
     type: Number,
+    required: false,
+  },
+  description: {
+    type: String,
     required: false,
   },
   confirmed: {
