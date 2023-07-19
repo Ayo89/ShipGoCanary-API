@@ -5,7 +5,6 @@ const fs = require("fs");
 const { cloudinary } = require("../../db/cloudinary");
 
 const getImages = async (req, res) => {
-  console.log(req.file)
   const file = req.file.path;
   const formData = new FormData();
 
@@ -20,7 +19,6 @@ const getImages = async (req, res) => {
         headers: formData.getHeaders(),
       }
     );
-    console.log(response)
     res.status(200).json(response.data);
   } catch (error) {
     console.error("Error uploading image:", error);
