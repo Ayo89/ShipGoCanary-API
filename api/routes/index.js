@@ -12,7 +12,7 @@ const imageRouter = require("./images.router");
 
 router.use("/users", checkAuth, userRouter);
 router.use("/shipments", checkAuth, shipmentRouter);
-router.use("/categories", checkAuth, categoryRouter);
+router.use("/categories", categoryRouter);
 router.use('/google', googleRouter)
 
 router.use("/images", imageRouter);
