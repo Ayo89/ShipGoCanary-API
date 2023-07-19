@@ -9,9 +9,7 @@ const api = express()
 const start = async () => {
   try {
     api
-      .use(cors({
-        origin: 'http://localhost:5173'
-      }))
+      .use(cors())
       .use(express.json())
       .use('/api', router)
       .listen(process.env.PORT || 5000)
